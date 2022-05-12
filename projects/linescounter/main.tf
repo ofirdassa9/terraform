@@ -1,6 +1,5 @@
 locals {
-	# vars = jsondecode(file("${path.root}/projects/linescounter/vars.tfvars.json"))
-  vars = jsondecode(file("vars.tfvars.json"))
+	vars = jsondecode(file("${path.cwd}/projects/linescounter/vars.tfvars.json"))
 }
 
 provider "aws" {

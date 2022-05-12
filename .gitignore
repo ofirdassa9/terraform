@@ -4,3 +4,4 @@ projects/linescounter/vars.tfvars.json
 projects/linescounter/terraform.tfstate.backup
 projects/linescounter/.terraform.lock.hcl
 projects/linescounter/.terraform
+projects/linescounter/terraform.tfstate
