@@ -16,7 +16,7 @@ def lambda_handler(event, context):
             "ID": str(uuid.uuid4()),
             "BucketName": bucket_name,
             "Key": key_name,
-            "LinesCount": str(body_len)
+            "LinesCount": body_len
         })
     except Exception as err:
         print(err)
