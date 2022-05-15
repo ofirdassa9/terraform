@@ -1,10 +1,7 @@
 import os
 import json
 import boto3
-import string
-import random
-def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
+import uuid
 
 def lambda_handler(event, context):
     try:
@@ -16,7 +13,7 @@ def lambda_handler(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table(os.environ['TABLE_NAME'])
         table.put_item(Item={
-            "ID": id_generator(),
+            "ID": str(uuid.uuid4()),
             "BucketName": bucket_name,
             "Key": key_name,
             "LinesCount": str(body_len)
