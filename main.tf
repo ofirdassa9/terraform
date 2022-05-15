@@ -25,8 +25,8 @@ module "security_group" {
 }
 
 module "db_subnet_group" {
-  source = "./modules/db_subnet_group"
-  subnet_ids = module.vpc.aws_subnet_id
+  source     = "./modules/db_subnet_group"
+  subnet_ids = module.security_group.subnet_ids
 }
 
 module "mysql-rds" {
