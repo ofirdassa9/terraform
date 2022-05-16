@@ -35,3 +35,23 @@ module "mysql_rds" {
   vpc_security_group_ids = [module.vpc.sg_mysql_rds]
   availability_zone      = local.vars.mysql_rds_az
 }
+
+module "lines_counter" {
+  depends_on = [
+    module.mysql_rds
+  ]
+  source         = "./modules/lines_counter"
+  vpc_id         = module.vpc.aws_vpc_id
+  vpc_cidr_block = module.vpc.vpc_cidr_block
+  subnet_ids     = module.vpc.aws_subnet_id
+  username       = local.vars.username
+  password       = local.vars.password
+  db_enpoint     = module.mysql_rds.endpoint
+  db_name        = module.mysql_rds.db_name
+  table_name     = local.vars.table_name
+  bucket_name    = local.vars.bucket_name
+  filename       = local.vars.filename
+  function_name  = local.vars.function_name
+  handler        = local.vars.handler
+  runtime        = local.vars.runtime
+}
