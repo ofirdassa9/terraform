@@ -29,8 +29,8 @@ module "db_subnet_group" {
   subnet_ids = module.security_group.subnet_ids
 }
 
-module "mysql-rds" {
-  source = "./modules/mysql-rds"
+module "mysql_rds" {
+  source = "./modules/mysql_rds"
   count                  = length(module.vpc.aws_vpc_id)
   allocated_storage      = local.vars.allocated_storage
   max_allocated_storage  = local.vars.max_allocated_storage
