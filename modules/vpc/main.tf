@@ -35,14 +35,6 @@ resource "aws_route_table" "rtb_public" {
   }
 }
 
-# resource "aws_route" "public_routes" {
-#   for_each                  = toset(var.public_subnets_cidr)
-#   route_table_id            = aws_route_table.rtb_public.id
-#   destination_cidr_block    = each.key
-#   gateway_id                = aws_internet_gateway.igw.id
-#   depends_on                = [aws_route_table.rtb_public]
-# }
-
 resource "aws_security_group" "mysql_rds" {
   name        = "sg_mysql_rds"
   description = "Allow MySQL-RDS inbound traffic"

@@ -18,17 +18,6 @@ module "vpc" {
   enable_dns_hostnames = local.vars.enable_dns_hostnames
 }
 
-# module "security_group" {
-#   source         = "./modules/security_group"
-#   vpc_id         = module.vpc.aws_vpc_id
-#   vpc_cidr_block = module.vpc.vpc_cidr_block
-# }
-
-# module "db_subnet_group" {
-#   source     = "./modules/db_subnet_group"
-#   subnet_ids = tolist(module.vpc.aws_subnet_id)
-# }
-
 module "mysql_rds" {
   source                 = "./modules/mysql_rds"
   subnet_ids             = module.vpc.aws_subnet_id
