@@ -2,12 +2,7 @@ variable "db_subnet_group_name" {
   default = ""
 }
 
-variable "security_group_ids" {
-  type=list(string)
-  default = [ "" ]
-}
-
-variable "mysql_rds_az" {
+variable "availability_zone" {
     default = ""
 }
 
@@ -31,7 +26,7 @@ variable "instance_class" {
   default = ""
 }
 
-variable "name" {
+variable "db_name" {
   default = ""
 }
 
@@ -56,6 +51,11 @@ variable "storage_type" {
 }
 
 variable "vpc_security_group_ids" {
+  type=list(string)
+  default = [ "" ]
+}
+
+variable "subnet_ids" {
   type=list(string)
   default = [ "" ]
 }

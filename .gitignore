@@ -1,6 +1,8 @@
 .vscode
 .terraform
 .terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
 modules/vars.tfvars.json
 projects/linescounter/testfile.txt
 projects/linescounter/vars.tfvars.json

@@ -17,3 +17,7 @@ output "aws_subnet_id" {
 output "aws_internet_gateway_id" {
     value = aws_internet_gateway.igw.id
 }
+
+output "sg_mysql_rds" {
+  value = aws_security_group.mysql_rds.id
+}

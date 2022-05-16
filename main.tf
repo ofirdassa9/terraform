@@ -18,32 +18,31 @@ module "vpc" {
   enable_dns_hostnames = local.vars.enable_dns_hostnames
 }
 
-module "security_group" {
-  source         = "./modules/security_group"
-  vpc_id         = module.vpc.aws_vpc_id
-  vpc_cidr_block = module.vpc.vpc_cidr_block
-}
+# module "security_group" {
+#   source         = "./modules/security_group"
+#   vpc_id         = module.vpc.aws_vpc_id
+#   vpc_cidr_block = module.vpc.vpc_cidr_block
+# }
 
-module "db_subnet_group" {
-  source     = "./modules/db_subnet_group"
-  subnet_ids = module.security_group.subnet_ids
-}
+# module "db_subnet_group" {
+#   source     = "./modules/db_subnet_group"
+#   subnet_ids = tolist(module.vpc.aws_subnet_id)
+# }
 
 module "mysql_rds" {
-  source = "./modules/mysql_rds"
-  count                  = length(module.vpc.aws_vpc_id)
+  source                 = "./modules/mysql_rds"
+  subnet_ids             = module.vpc.aws_subnet_id
   allocated_storage      = local.vars.allocated_storage
   max_allocated_storage  = local.vars.max_allocated_storage
   engine                 = local.vars.engine
   engine_version         = local.vars.engine_version
   instance_class         = local.vars.instance_class
-  name                   = local.vars.name
+  db_name                = local.vars.db_name
   username               = local.vars.username
   password               = local.vars.password
   parameter_group_name   = local.vars.parameter_group_name
   skip_final_snapshot    = local.vars.skip_final_snapshot
   storage_type           = local.vars.storage_type
-  vpc_security_group_ids = module.vpc.aws_vpc_id[count.index]
-  mysql_rds_az           = local.vars.mysql_rds_az
-  db_subnet_group_name   = module.db_subnet_group.aws_db_subnet_group_name
+  vpc_security_group_ids = [module.vpc.sg_mysql_rds]
+  availability_zone      = local.vars.mysql_rds_az
 }
