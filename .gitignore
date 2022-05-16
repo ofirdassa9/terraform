@@ -5,3 +5,4 @@ terraform.tfstate
 terraform.tfstate.backup
 testfile.txt
 modules/vars.tfvars.json
+modules/lines_counter/layers/pymysql

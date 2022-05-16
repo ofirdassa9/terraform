@@ -3,8 +3,8 @@ locals {
 }
 
 provider "aws" {
-  profile = "personal"
-  region = "us-east-1"
+  profile = local.vars.profile
+  region = local.vars.region
 }
 
 module "vpc" {
