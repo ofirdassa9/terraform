@@ -20,14 +20,14 @@ def lambda_handler(event, context):
             database=os.environ["DB_NAME"]
         )
         cur = mydb.cursor()
-        sql = "CREATE TABLE IF NOT EXISTS " + table_name + " (ID VARCHAR(50), BucketName VARCHAR(50), FileName VARCHAR(50), LinesCount VARCHAR(50));"
-        print(sql)
+        sql = f"CREATE TABLE IF NOT EXISTS {table_name} (ID VARCHAR(50), BucketName VARCHAR(50), FileName VARCHAR(50), LinesCount VARCHAR(50));"
+        print(f"QUERY: {sql}")
         cur.execute(sql)
         print(f"Created table {table_name}")
         sql = f"INSERT INTO {table_name} (ID, BucketName, FileName, LinesCount) VALUES (%s, %s, %s, %s)"
         val = (str(uuid.uuid4()), bucket_name, key_name, body_len)
+        print(f"QUERY: {sql} VARS: {val}")
         cur.execute(sql, val)
-        print(f"inserted data {bucket_name} {key_name} {body_len}")
         mydb.commit()
         cur.execute(f'SELECT * FROM {table_name}')
         rows = cur.fetchall()
