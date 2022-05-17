@@ -1,7 +1,6 @@
 resource "aws_db_subnet_group" "mysql_rds_subnet_group" {
   name       = "db_net_group_mysql_rds"
   subnet_ids = var.subnet_ids
-
   tags = {
     Name = "db_net_group_mysql_rds"
   }

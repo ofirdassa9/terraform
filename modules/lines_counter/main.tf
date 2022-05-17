@@ -112,9 +112,8 @@ resource "aws_lambda_function" "function" {
 }
 
 resource "aws_lambda_layer_version" "lambda_layer" {
-  filename   = "${path.module}/layers/pymysql_layer.zip"
-  layer_name = "layer_linescounter"
-
+  filename            = "${path.module}/layers/pymysql_layer.zip"
+  layer_name          = "layer_linescounter"
   compatible_runtimes = [var.runtime]
 }
 
@@ -128,7 +127,6 @@ resource "aws_lambda_permission" "allow_bucket_lambda" {
 
 resource "aws_s3_bucket_notification" "allow_s3_bucket_notification" {
   bucket = aws_s3_bucket.bucket.bucket
-
   lambda_function {
     lambda_function_arn = aws_lambda_function.function.arn
     events              = ["s3:ObjectCreated:*"]

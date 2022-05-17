@@ -1,6 +1,6 @@
 resource "aws_vpc" "vpc" {
-  cidr_block = var.vpc_cidr_block
-  enable_dns_support = var.enable_dns_support
+  cidr_block           = var.vpc_cidr_block
+  enable_dns_support   = var.enable_dns_support
   enable_dns_hostnames = var.enable_dns_hostnames
   tags = {
     "Name" = "vpc-${var.environment}"
@@ -25,13 +25,13 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_route_table" "rtb_public" {
-  vpc_id     = aws_vpc.vpc.id
+  vpc_id = aws_vpc.vpc.id
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
   tags   = {
-    Name       = "rtb_public"
+    Name = "rtb_public"
   }
 }
 
