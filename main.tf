@@ -46,7 +46,7 @@ module "lines_counter" {
   subnet_ids     = module.vpc.aws_subnet_id
   username       = local.vars.username
   password       = local.vars.password
-  db_enpoint     = module.mysql_rds.endpoint
+  db_enpoint     = module.mysql_rds.address
   db_name        = module.mysql_rds.db_name
   table_name     = local.vars.table_name
   bucket_name    = local.vars.bucket_name
