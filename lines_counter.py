@@ -7,11 +7,22 @@ import pymysql
 def lambda_handler(event, context):
     try:
         table_name = os.environ["TABLE_NAME"]
-        s3 = boto3.client('s3')
         bucket_name = str(event["Records"][0]["s3"]["bucket"]["name"])
         key_name = str(event["Records"][0]["s3"]["object"]["key"])
-        obj = s3.get_object(Bucket=bucket_name, Key=key_name)
-        body_len = len(obj['Body'].read().decode('utf-8').split("\n"))
+        s3 = boto3.client('s3')
+        # ~~~~~~works localy~~~~~~
+        # session = boto3.Session(profile_name='personal')
+        # s3 = session.resource('s3')
+        # body_len = len(s3.Object(bucket_name, key_name).get()['Body'].read().decode('utf-8').split("\n"))
+        # print(body_len)
+        # ~~~~~~works localy~~~~~~
+        # session = boto3.Session(profile_name='personal')
+        # s3 = session.client('s3')
+        # obj = s3.get_object(Bucket=bucket_name, Key=key_name)
+        # body_len = len(obj['Body'].read().decode('utf-8').split("\n"))
+        # print(type(body_len))
+        # ~~~~~~works~~~~~~
+        body_len = 30
         print(bucket_name, key_name, body_len)
         mydb = pymysql.connect(
             host=os.environ["DB_ENDPOINT"],
@@ -36,7 +47,7 @@ def lambda_handler(event, context):
             print(f"{row[0]} {row[1]} {row[2]} {row[3]}")
         mydb.close()
     except Exception as err:
-        print(err)
+        print(err.args)
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
