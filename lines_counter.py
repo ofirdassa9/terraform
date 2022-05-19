@@ -29,7 +29,6 @@ def lambda_handler(event, context):
         print(f"QUERY: {sql} VARS: {val}")
         cur.execute(sql, val)
         mydb.commit()
-        cur.execute(f'SELECT * FROM {table_name}')
         rows = cur.fetchall()
         for row in rows:
             print(f"{row[0]} {row[1]} {row[2]} {row[3]}")
