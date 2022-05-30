@@ -13,6 +13,8 @@ module "vpc" {
   vpc_cidr_block = local.vars.vpc_cidr_block
   public_subnets_az = local.vars.public_subnets_az
   public_subnets_cidr = local.vars.public_subnets_cidr
+  # private_subnets_az = local.vars.private_subnets_az
+  # private_subnets_cidr = local.vars.private_subnets_cidr
   environment = local.vars.environment
   enable_dns_support = local.vars.enable_dns_support
   enable_dns_hostnames = local.vars.enable_dns_hostnames
@@ -20,7 +22,7 @@ module "vpc" {
 
 module "mysql_rds" {
   source                 = "./modules/mysql_rds"
-  subnet_ids             = module.vpc.aws_subnet_id
+  subnet_ids             = module.vpc.aws_public_subnet_id
   allocated_storage      = local.vars.allocated_storage
   max_allocated_storage  = local.vars.max_allocated_storage
   engine                 = local.vars.engine
@@ -43,7 +45,7 @@ module "lines_counter" {
   source         = "./modules/lines_counter"
   vpc_id         = module.vpc.aws_vpc_id
   vpc_cidr_block = module.vpc.vpc_cidr_block
-  subnet_ids     = module.vpc.aws_subnet_id
+  subnet_ids     = module.vpc.aws_public_subnet_id
   username       = local.vars.username
   password       = local.vars.password
   db_enpoint     = module.mysql_rds.address

@@ -10,9 +10,17 @@ output "vpc_cidr_block" {
   value = aws_vpc.vpc.cidr_block
 }
 
-output "aws_subnet_id" {
+output "aws_public_subnet_id" {
     value = aws_subnet.public_subnets.*.id
 }
+
+# output "aws_private_subnet_id" {
+#     value = aws_subnet.private_subnets.*.id
+# }
+
+# output "aws_nat_gateway_id" {
+#     value = aws_nat_gateway.nat-gw.*.id
+# }
 
 output "aws_internet_gateway_id" {
     value = aws_internet_gateway.igw.id

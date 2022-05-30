@@ -19,6 +19,10 @@ variable "subnet_ids" {
   default = ""
 }
 
+variable "rtb_id" {
+  default = ""  
+}
+
 variable "db_name" {
   default = ""  
 }

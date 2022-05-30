@@ -8,14 +8,24 @@ resource "aws_vpc" "vpc" {
 }
 
 resource "aws_subnet" "public_subnets" {
-  count             = length(var.public_subnets_az)
-  cidr_block        = var.public_subnets_cidr[count.index]
-  availability_zone = var.public_subnets_az[count.index]
-  vpc_id            = aws_vpc.vpc.id
+  count                   = length(var.public_subnets_az)
+  cidr_block              = var.public_subnets_cidr[count.index]
+  availability_zone       = var.public_subnets_az[count.index]
+  vpc_id                  = aws_vpc.vpc.id
   tags = {
     "Name" = "net-public-${var.environment}-0${count.index+1}"
   }
 }
+
+# resource "aws_subnet" "private_subnets" {
+#   count             = length(var.private_subnets_az)
+#   cidr_block        = var.private_subnets_cidr[count.index]
+#   availability_zone = var.private_subnets_az[count.index]
+#   vpc_id            = aws_vpc.vpc.id
+#   tags = {
+#     "Name" = "net-private-${var.environment}-0${count.index+1}"
+#   }
+# }
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
@@ -34,6 +44,46 @@ resource "aws_route_table" "rtb_public" {
     Name = "rtb_public"
   }
 }
+
+resource "aws_route_table_association" "public" {
+  count = length(var.public_subnets_az)
+
+  subnet_id      = aws_subnet.public_subnets[count.index].id
+  route_table_id = aws_route_table.rtb_public.id
+}
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id             = aws_vpc.vpc.id
+  service_name       = "com.amazonaws.us-east-1.s3"
+  tags = {
+    Name = "S3-endpoint"
+  }
+}
+
+resource "aws_vpc_endpoint_route_table_association" "s3" {
+  route_table_id  = aws_route_table.rtb_public.id
+  vpc_endpoint_id = aws_vpc_endpoint.s3.id
+}
+
+# resource "aws_nat_gateway" "nat-gw" {
+#   count             = length(var.private_subnets_az)
+#   connectivity_type = "private"
+#   subnet_id         = aws_subnet.private_subnets[count.index].id
+#   tags = {
+#     Name = "NAT-GW-${count.index+1}"
+#   }
+# }
+
+# resource "aws_route_table" "rtb_private" {
+#   vpc_id    = aws_vpc.vpc.id
+#   route {
+#     cidr_block     = "0.0.0.0/0"
+#     nat_gateway_id = aws_nat_gateway.nat-gw[0].id
+#   }
+#   tags   = {
+#     Name = "rtb_private"
+#   }
+# }
 
 resource "aws_security_group" "mysql_rds" {
   name        = "sg_mysql_rds"

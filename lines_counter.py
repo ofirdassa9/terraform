@@ -10,19 +10,9 @@ def lambda_handler(event, context):
         bucket_name = str(event["Records"][0]["s3"]["bucket"]["name"])
         key_name = str(event["Records"][0]["s3"]["object"]["key"])
         s3 = boto3.client('s3')
-        # ~~~~~~works localy~~~~~~
-        # session = boto3.Session(profile_name='personal')
-        # s3 = session.resource('s3')
-        # body_len = len(s3.Object(bucket_name, key_name).get()['Body'].read().decode('utf-8').split("\n"))
-        # print(body_len)
-        # ~~~~~~works localy~~~~~~
-        # session = boto3.Session(profile_name='personal')
-        # s3 = session.client('s3')
-        # obj = s3.get_object(Bucket=bucket_name, Key=key_name)
-        # body_len = len(obj['Body'].read().decode('utf-8').split("\n"))
-        # print(type(body_len))
-        # ~~~~~~works~~~~~~
-        body_len = 30
+        obj = s3.get_object(Bucket=bucket_name, Key=key_name)
+        body_len = len(obj['Body'].read().decode('utf-8').split("\n"))
+        print(type(body_len))
         print(bucket_name, key_name, body_len)
         mydb = pymysql.connect(
             host=os.environ["DB_ENDPOINT"],

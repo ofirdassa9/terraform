@@ -20,10 +20,10 @@ resource "aws_security_group" "mysql_rds_for_linescounter" {
   vpc_id      = var.vpc_id
 
   egress {
-    from_port        = 3306
-    to_port          = 3306
-    protocol         = "tcp"
-    cidr_blocks      = [var.vpc_cidr_block]
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -95,7 +95,7 @@ resource "aws_lambda_function" "function" {
   role          = aws_iam_role.iam_for_lambda.arn
   runtime       = var.runtime
   filename      = var.filename
-  layers        = [aws_lambda_layer_version.lambda_layer.arn]
+  layers        = [aws_lambda_layer_version.linescounter_layer.arn]
   vpc_config {
     subnet_ids         = var.subnet_ids
     security_group_ids = [aws_security_group.mysql_rds_for_linescounter.id]
@@ -111,9 +111,9 @@ resource "aws_lambda_function" "function" {
   }
 }
 
-resource "aws_lambda_layer_version" "lambda_layer" {
-  filename            = "${path.module}/layers/pymysql_layer.zip"
-  layer_name          = "layer_linescounter"
+resource "aws_lambda_layer_version" "linescounter_layer" {
+  filename            = "${path.module}/layers/linescounter_layer.zip"
+  layer_name          = "layer-linescounter"
   compatible_runtimes = [var.runtime]
 }
 

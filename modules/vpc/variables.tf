@@ -16,6 +16,16 @@ variable "public_subnets_cidr" {
   default = [ "" ]
 }
 
+# variable "private_subnets_az" {
+#   type=list(string)
+#   default = [ "" ]
+# }
+
+# variable "private_subnets_cidr" {
+#   type=list(string)
+#   default = [ "" ]
+# }
+
 variable "environment" {
   default = ""
 }
