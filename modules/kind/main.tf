@@ -63,7 +63,7 @@ resource "aws_security_group" "kind" {
     from_port        = 7443
     to_port          = 7443
     protocol         = "tcp"
-    cidr_blocks      = [var.vpc_cidr_block,"54.145.73.180/32"]
+    cidr_blocks      = [var.vpc_cidr_block]
   }
 
   ingress {
@@ -71,7 +71,7 @@ resource "aws_security_group" "kind" {
     from_port        = 80
     to_port          = 80
     protocol         = "tcp"
-    cidr_blocks      = [var.vpc_cidr_block,"54.145.73.180/32"]
+    cidr_blocks      = [var.vpc_cidr_block]
   }
 
   egress {
