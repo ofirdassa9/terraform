@@ -1,0 +1,85 @@
+#install docker
+sudo apt-get update
+sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+#install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+#install kind
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.9.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
+#configure kind
+# cat > kind-config.yaml <<EOF
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: k8s-playground
+nodes:
+- role: control-plane
+
+# EOF
+#create the cluster
+sudo sysctl net/netfilter/nf_conntrack_max=131072 #to stop kube-proxt crashbackloop
+#kind create cluster --config kind-config.yaml
+cat <<EOF | kind create cluster --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+networking:
+  apiServerAddress: "0.0.0.0"
+  apiServerPort: 7443
+EOF
+#install microk8s
+sudo snap install microk8s --classic
+# Clone faas-netes
+git clone https://github.com/openfaas/faas-netes
+kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
+# FaaS auth
+kubectl -n openfaas create secret generic basic-auth \
+--from-literal=basic-auth-user=admin \
+--from-literal=basic-auth-password="123456"
+
+# Install faas-cli
+wget https://github.com/openfaas/faas-cli/releases/download/0.14.4/faas-cli
+chmod +x faas-cli
+mv faas-cli /usr/local/bin/
+
+# Deploy OpenFaaS
+helm repo add openfaas https://openfaas.github.io/faas-netes/
+helm repo update \
+ && helm upgrade openfaas --install openfaas/openfaas \
+    --namespace openfaas  \
+    --set functionNamespace=openfaas-fn \
+    --set generateBasicAuth=true \
+    --set serviceType=LoadBalancer
+kubectl port-forward svc/gateway -n openfaas 8080:8080 &
+export OPENFAAS_URL=http://0.0.0.0:8080
+
+echo -n 123456 | faas-cli login --password-stdin
+

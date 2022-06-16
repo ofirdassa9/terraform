@@ -3,7 +3,7 @@ variable "handler" {}
 variable "runtime" {}
 variable "filename" {}
 variable "function_name" {}
-variable "bucket_name" {}
+variable "lines_bucket_name" {}
 variable "bucket_acl" {
   default = "private"
 }

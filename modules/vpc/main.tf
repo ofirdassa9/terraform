@@ -86,7 +86,7 @@ resource "aws_vpc_endpoint_route_table_association" "s3" {
 # }
 
 resource "aws_security_group" "mysql_rds" {
-  name        = "sg_mysql_rds"
+  name        = "sgr-mysql-rds"
   description = "Allow MySQL-RDS inbound traffic"
   vpc_id      = aws_vpc.vpc.id
 
@@ -94,6 +94,31 @@ resource "aws_security_group" "mysql_rds" {
     description      = "MYSQL"
     from_port        = 3306
     to_port          = 3306
+    protocol         = "tcp"
+    cidr_blocks      = [aws_vpc.vpc.cidr_block]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "sgr-mysql-rds"
+  }
+}
+
+resource "aws_security_group" "vpc_access" {
+  name        = "sgr-vpc-access"
+  description = "SSH & RDP from home and office"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    description      = "RDP"
+    from_port        = 3389
+    to_port          = 3389
     protocol         = "tcp"
     cidr_blocks      = [aws_vpc.vpc.cidr_block]
   }
@@ -114,6 +139,6 @@ resource "aws_security_group" "mysql_rds" {
   }
 
   tags = {
-    Name = "mysql_rds"
+    Name = "sgr-vpc-access"
   }
 }

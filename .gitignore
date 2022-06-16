@@ -3,6 +3,8 @@
 .terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
-testfile.txt
+lines_testfile.txt
+words_testfile.txt
 modules/vars.tfvars.json
 modules/lines_counter/layers/python
+modules/kind/keys

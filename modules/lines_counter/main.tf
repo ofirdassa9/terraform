@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket = var.bucket_name
+  bucket = var.lines_bucket_name
 }
 
 resource "aws_s3_bucket_acl" "bucket_acl" {
@@ -15,7 +15,7 @@ resource "aws_s3_bucket_versioning" "bucket_versioning" {
 }
 
 resource "aws_security_group" "mysql_rds_for_linescounter" {
-  name        = "sg_mysql_rds_lines_counter"
+  name        = "sgr-rds-mysql-lines-counter"
   description = "Allow MySQL-RDS inbound traffic"
   vpc_id      = var.vpc_id
 
@@ -27,7 +27,7 @@ resource "aws_security_group" "mysql_rds_for_linescounter" {
   }
 
   tags = {
-    Name = "mysql_rds_for_linescounter"
+    Name = "sgr-rds-mysql-lines-counter"
   }
 }
 

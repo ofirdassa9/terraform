@@ -8,15 +8,17 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "./modules/vpc"
-  vpc_name = local.vars.vpc_name
-  vpc_cidr_block = local.vars.vpc_cidr_block
-  public_subnets_az = local.vars.public_subnets_az
-  public_subnets_cidr = local.vars.public_subnets_cidr
-  # private_subnets_az = local.vars.private_subnets_az
+  source               = "./modules/vpc"
+  vpc_name             = local.vars.vpc_name
+  vpc_cidr_block       = local.vars.vpc_cidr_block
+  public_subnets_az    = local.vars.public_subnets_az
+  public_subnets_cidr  = local.vars.public_subnets_cidr
+  # private_subnets_az   = local.vars.private_subnets_az
   # private_subnets_cidr = local.vars.private_subnets_cidr
-  environment = local.vars.environment
-  enable_dns_support = local.vars.enable_dns_support
+  # home_cidr            = local.vars.home_cidr
+  # office_cidr          = local.vars.office_cidr
+  environment          = local.vars.environment
+  enable_dns_support   = local.vars.enable_dns_support
   enable_dns_hostnames = local.vars.enable_dns_hostnames
 }
 
@@ -42,18 +44,34 @@ module "lines_counter" {
   depends_on = [
     module.mysql_rds
   ]
-  source         = "./modules/lines_counter"
-  vpc_id         = module.vpc.aws_vpc_id
-  vpc_cidr_block = module.vpc.vpc_cidr_block
-  subnet_ids     = module.vpc.aws_public_subnet_id
-  username       = local.vars.username
-  password       = local.vars.password
-  db_enpoint     = module.mysql_rds.address
-  db_name        = module.mysql_rds.db_name
-  table_name     = local.vars.table_name
-  bucket_name    = local.vars.bucket_name
-  filename       = local.vars.filename
-  function_name  = local.vars.function_name
-  handler        = local.vars.handler
-  runtime        = local.vars.runtime
+  source               = "./modules/lines_counter"
+  vpc_id               = module.vpc.aws_vpc_id
+  vpc_cidr_block       = module.vpc.vpc_cidr_block
+  subnet_ids           = module.vpc.aws_public_subnet_id
+  username             = local.vars.username
+  password             = local.vars.password
+  db_enpoint           = module.mysql_rds.address
+  db_name              = module.mysql_rds.db_name
+  table_name           = local.vars.table_name
+  lines_bucket_name    = local.vars.lines_bucket_name
+  filename             = local.vars.filename
+  function_name        = local.vars.function_name
+  handler              = local.vars.handler
+  runtime              = local.vars.runtime
+}
+
+module "ec2_k8s" {
+  source             = "./modules/kind"
+  vpc_id             = module.vpc.aws_vpc_id
+  vpc_cidr_block     = module.vpc.vpc_cidr_block
+  ec2_public_key     = local.vars.ec2_public_key
+  environment        = local.vars.environment
+  security_group_ids = module.vpc.sg_vpc_access
+  subnet_id          = module.vpc.aws_public_subnet_id
+  az_for_ebs         = local.vars.public_subnets_az
+}
+
+module "words_counter_batch" {
+  source            = "./modules/words_counter_batch"
+  words_bucket_name = local.vars.words_bucket_name
 }

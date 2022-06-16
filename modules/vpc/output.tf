@@ -29,3 +29,7 @@ output "aws_internet_gateway_id" {
 output "sg_mysql_rds" {
   value = aws_security_group.mysql_rds.id
 }
+
+output "sg_vpc_access" {
+  value = aws_security_group.vpc_access.id
+}

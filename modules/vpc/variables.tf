@@ -38,6 +38,10 @@ variable "enable_dns_hostnames" {
   type = bool
 }
 
-variable "vpc_id" {
-  default = ""
-}
+# variable "home_cidr" {
+#   default = ""
+# }
+
+# variable "office_cidr" {
+#   default = ""
+# }
