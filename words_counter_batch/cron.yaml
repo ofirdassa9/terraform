@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: words-counter-batch
+spec:
+  schedule: "* * * * 1"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: words-counter-batch
+            #pulling image from my docker-hub repo
+            image: ofirdassa/words-counter-batch
+            envFrom:
+            - secretRef:
+                name: secret-words-counter-batch
+            imagePullPolicy: IfNotPresent
+          restartPolicy: OnFailure

@@ -7,6 +7,11 @@ provider "aws" {
   region = local.vars.region
 }
 
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+}
+
+
 module "vpc" {
   source               = "./modules/vpc"
   vpc_name             = local.vars.vpc_name
@@ -72,6 +77,14 @@ module "ec2_k8s" {
 }
 
 module "words_counter_batch" {
-  source            = "./modules/words_counter_batch"
-  words_bucket_name = local.vars.words_bucket_name
+  source                = "./modules/words_counter_batch"
+  AWS_ACCESS_KEY_ID     = local.vars.AWS_ACCESS_KEY_ID
+  AWS_SECRET_ACCESS_KEY = local.vars.AWS_SECRET_ACCESS_KEY
+  DB_ENDPOINT           = module.mysql_rds.address
+  USERNAME              = local.vars.username
+  PASSWORD              = local.vars.password
+  DB_NAME               = module.mysql_rds.db_name
+  BUCKET_NAME           = local.vars.words_bucket_name
+  TABLE_NAME            = local.vars.words_table_name
+
 }
