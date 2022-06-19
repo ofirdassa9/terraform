@@ -1,0 +1,150 @@
+envFromSecret: "secret-words-counter-batch"
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: MySQL
+      type: mysql
+      url: ${DB_ENDPOINT}
+      database: ${DB_NAME}
+      user: ${USERNAME}
+      secureJsonData:
+        password: ${PASSWORD}
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/default
+dashboards:
+  default:
+    project-dashboard:
+      json: |
+        {
+          "annotations": {
+            "list": [{
+              "builtIn": 1,
+              "datasource": {
+                "type": "grafana",
+                "uid": "-- Grafana --"
+              },
+              "enable": true,
+              "hide": true,
+              "iconColor": "rgba(0, 211, 255, 1)",
+              "name": "Annotations & Alerts",
+              "target": {
+                "limit": 100,
+                "matchAny": false,
+                "tags": [],
+                "type": "dashboard"
+              },
+              "type": "dashboard"
+            }]
+          },
+          "editable": true,
+          "fiscalYearStartMonth": 0,
+          "graphTooltip": 0,
+          "id": 1,
+          "links": [],
+          "liveNow": false,
+          "panels": [{
+            "datasource": {
+              "type": "mysql",
+              "uid": "P211906C1C32DB77E"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "custom": {
+                  "align": "auto",
+                  "displayMode": "auto",
+                  "inspect": false
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [{
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 9,
+              "w": 12,
+              "x": 0,
+              "y": 0
+            },
+            "id": 2,
+            "options": {
+              "footer": {
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true
+            },
+            "pluginVersion": "8.5.3",
+            "targets": [{
+              "datasource": {
+                "type": "mysql",
+                "uid": "P211906C1C32DB77E"
+              },
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT * FROM words_counter_batch;",
+              "refId": "A",
+              "select": [
+                [{
+                  "params": [
+                    "value"
+                  ],
+                  "type": "column"
+                }]
+              ],
+              "timeColumn": "time",
+              "where": [{
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }]
+            }],
+            "title": "words_counter_batch",
+            "type": "table"
+          }],
+          "schemaVersion": 36,
+          "style": "dark",
+          "tags": [],
+          "templating": {
+            "list": []
+          },
+          "time": {
+            "from": "now-6h",
+            "to": "now"
+          },
+          "timepicker": {},
+          "timezone": "",
+          "title": "Architecture project",
+          "uid": "X7Fnzz37k",
+          "version": 1,
+          "weekStart": ""
+        }

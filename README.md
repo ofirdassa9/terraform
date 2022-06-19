@@ -6,8 +6,9 @@ Terraform & Kubernetes Project
 
 Note - This assumes you already have a k8s cluster in your context
 ```bash 
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm upgrade -i grafana bitnami/grafana
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+helm upgrade -n monitoring -i <release-name> grafana/grafana -f grafana/values.yaml
 ```
 
 ## Usage

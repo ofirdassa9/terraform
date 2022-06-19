@@ -1,6 +1,7 @@
 resource "kubernetes_secret" "words_counter_batch" {
     metadata {
         name      = "secret-words-counter-batch"
+        namespace = "monitoring"
     }
 
     data = {
