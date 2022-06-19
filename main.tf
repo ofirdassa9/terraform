@@ -77,6 +77,9 @@ module "ec2_k8s" {
 }
 
 module "words_counter_batch" {
+    depends_on = [
+    module.mysql_rds
+  ]
   source                = "./modules/words_counter_batch"
   AWS_ACCESS_KEY_ID     = local.vars.AWS_ACCESS_KEY_ID
   AWS_SECRET_ACCESS_KEY = local.vars.AWS_SECRET_ACCESS_KEY
