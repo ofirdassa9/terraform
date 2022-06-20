@@ -3,6 +3,7 @@ from dateutil.tz import tzutc, UTC
 import boto3
 import os
 import pymysql
+from logs import counter_log, log
 
 try:
     mydb = pymysql.connect(
@@ -23,18 +24,19 @@ try:
     for object in bucket.objects.all():
         if (object.last_modified > datetime.now(tzutc()) - timedelta(hours = 24) and object.get()['ContentLength'] <= 3000):
             words_count = len(object.get()['Body'].read().decode('utf-8').split())
-            print(f"{bucket_name}/{object.key} {run_date} {words_count}")
-            print(f"the word count of {object.key} is {words_count}")
+            log(f"{bucket_name}/{object.key} {run_date} {words_count}")
+            log(f"the word count of {object.key} is {words_count}")
+            counter_log(bucket_name,words_count,object)
         cur = mydb.cursor()
         sql = f"CREATE TABLE IF NOT EXISTS {table_name} (ObjectPath VARCHAR(50), Date DATE, AmountOfWords INT(50));"
-        print(f"QUERY: {sql}")
+        log(f"QUERY: {sql}")
         cur.execute(sql)
-        print(f"Created table {table_name}")
+        log(f"Created table {table_name}")
         sql = f"INSERT INTO {table_name} (ObjectPath, Date, AmountOfWords) VALUES (%s, %s, %s)"
         val = (f"{bucket_name}/{object.key}", run_date, words_count)
-        print(f"QUERY: {sql} VARS: {val}")
+        log(f"QUERY: {sql} VARS: {val}")
         cur.execute(sql, val)
-        print(f"inserted data {bucket_name}/{object.key} {run_date} {words_count}")
+        log(f"inserted data {bucket_name}/{object.key} {run_date} {words_count}")
         mydb.commit()
     mydb.close()
 except Exception as err:

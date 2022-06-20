@@ -3,13 +3,31 @@ datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
-    - name: MySQL
-      type: mysql
-      url: ${DB_ENDPOINT}
-      database: ${DB_NAME}
-      user: ${USERNAME}
-      secureJsonData:
-        password: ${PASSWORD}
+      - name: MySQL
+        type: mysql
+        url: ${DB_ENDPOINT}
+        database: ${DB_NAME}
+        user: ${USERNAME}
+        secureJsonData:
+          password: ${PASSWORD}
+      - name: words-counter-batch
+        type: elasticsearch
+        database: "words-counter-batch"
+        url: http://elasticsearch-master.default:9200
+        jsonData:
+          timeField: "timestamp"
+          esVersion: 70
+          logMessageField: file_size
+          logLevelField: fields.level
+      - name: script-logs
+        type: elasticsearch
+        database: "script-logs"
+        url: http://elasticsearch-master.default:9200
+        jsonData:
+          timeField: "timestamp"
+          esVersion: 70
+          logMessageField: message
+          logLevelField: fields.level
 dashboardProviders:
   dashboardproviders.yaml:
     apiVersion: 1
@@ -38,8 +56,9 @@ dashboards:
     project-dashboard:
       json: |
         {
-          "annotations": {
-            "list": [{
+        "annotations": {
+          "list": [
+            {
               "builtIn": 1,
               "datasource": {
                 "type": "grafana",
@@ -56,15 +75,17 @@ dashboards:
                 "type": "dashboard"
               },
               "type": "dashboard"
-            }]
-          },
-          "editable": true,
-          "fiscalYearStartMonth": 0,
-          "graphTooltip": 0,
-          "id": 1,
-          "links": [],
-          "liveNow": false,
-          "panels": [{
+            }
+          ]
+        },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 0,
+        "id": 2,
+        "links": [],
+        "liveNow": false,
+        "panels": [
+          {
             "datasource": {
               "type": "mysql",
               "uid": "P211906C1C32DB77E"
@@ -82,7 +103,261 @@ dashboards:
                 "mappings": [],
                 "thresholds": {
                   "mode": "absolute",
-                  "steps": [{
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "LinesCount"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 87
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "FileName"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 84
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "BucketName"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 201
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "ID"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 283
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 9,
+              "w": 9,
+              "x": 0,
+              "y": 0
+            },
+            "id": 2,
+            "options": {
+              "footer": {
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true,
+              "sortBy": []
+            },
+            "pluginVersion": "8.5.3",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "mysql",
+                  "uid": "P211906C1C32DB77E"
+                },
+                "format": "table",
+                "group": [],
+                "metricColumn": "none",
+                "rawQuery": true,
+                "rawSql": "SELECT * from lines_counter;\n",
+                "refId": "A",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "value"
+                      ],
+                      "type": "column"
+                    }
+                  ]
+                ],
+                "timeColumn": "time",
+                "where": [
+                  {
+                    "name": "$__timeFilter",
+                    "params": [],
+                    "type": "macro"
+                  }
+                ]
+              }
+            ],
+            "title": "lines_counter",
+            "type": "table"
+          },
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "P211906C1C32DB77E"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "custom": {
+                  "align": "auto",
+                  "displayMode": "auto",
+                  "inspect": false
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "AmountOfWords"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 163
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Date"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 216
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "ObjectPath"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 249
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 9,
+              "w": 8,
+              "x": 9,
+              "y": 0
+            },
+            "id": 4,
+            "options": {
+              "footer": {
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true,
+              "sortBy": []
+            },
+            "pluginVersion": "8.5.3",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "mysql",
+                  "uid": "P211906C1C32DB77E"
+                },
+                "format": "table",
+                "group": [],
+                "metricColumn": "none",
+                "rawQuery": true,
+                "rawSql": "SELECT * from words_counter_batch;\n",
+                "refId": "A",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "value"
+                      ],
+                      "type": "column"
+                    }
+                  ]
+                ],
+                "timeColumn": "time",
+                "where": [
+                  {
+                    "name": "$__timeFilter",
+                    "params": [],
+                    "type": "macro"
+                  }
+                ]
+              }
+            ],
+            "title": "words_counter_batch",
+            "type": "table"
+          },
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "P211906C1C32DB77E"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
                       "color": "green",
                       "value": null
                     },
@@ -97,11 +372,151 @@ dashboards:
             },
             "gridPos": {
               "h": 9,
-              "w": 12,
-              "x": 0,
+              "w": 7,
+              "x": 17,
               "y": 0
             },
-            "id": 2,
+            "id": 10,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "textMode": "auto"
+            },
+            "pluginVersion": "8.5.3",
+            "targets": [
+              {
+                "alias": "",
+                "bucketAggs": [
+                  {
+                    "field": "timestamp",
+                    "id": "2",
+                    "settings": {
+                      "interval": "auto"
+                    },
+                    "type": "date_histogram"
+                  }
+                ],
+                "datasource": {
+                  "type": "mysql",
+                  "uid": "P211906C1C32DB77E"
+                },
+                "format": "table",
+                "group": [],
+                "metricColumn": "none",
+                "metrics": [
+                  {
+                    "id": "1",
+                    "type": "count"
+                  }
+                ],
+                "query": "",
+                "rawQuery": true,
+                "rawSql": "SELECT count(*)\nFROM words_counter_batch\nwhere date between date_sub(now(),INTERVAL 1 WEEK) and now();",
+                "refId": "A",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "*"
+                      ],
+                      "type": "column"
+                    }
+                  ]
+                ],
+                "table": "words_counter_batch",
+                "timeColumn": "time",
+                "timeField": "timestamp",
+                "where": []
+              }
+            ],
+            "title": "new file in last week",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "elasticsearch",
+              "uid": "PCE924A9B7DB6CEDC"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "custom": {
+                  "align": "auto",
+                  "displayMode": "auto",
+                  "inspect": false
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "_source"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 389
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "_index"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 0
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "timestamp"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 200
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 17,
+              "x": 0,
+              "y": 9
+            },
+            "id": 8,
             "options": {
               "footer": {
                 "fields": "",
@@ -110,52 +525,398 @@ dashboards:
                 ],
                 "show": false
               },
-              "showHeader": true
+              "showHeader": true,
+              "sortBy": []
             },
             "pluginVersion": "8.5.3",
-            "targets": [{
-              "datasource": {
-                "type": "mysql",
-                "uid": "P211906C1C32DB77E"
-              },
-              "format": "table",
-              "group": [],
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT * FROM words_counter_batch;",
-              "refId": "A",
-              "select": [
-                [{
-                  "params": [
-                    "value"
-                  ],
-                  "type": "column"
-                }]
-              ],
-              "timeColumn": "time",
-              "where": [{
-                "name": "$__timeFilter",
-                "params": [],
-                "type": "macro"
-              }]
-            }],
-            "title": "words_counter_batch",
+            "targets": [
+              {
+                "alias": "",
+                "bucketAggs": [],
+                "datasource": {
+                  "type": "elasticsearch",
+                  "uid": "PCE924A9B7DB6CEDC"
+                },
+                "metrics": [
+                  {
+                    "id": "1",
+                    "settings": {
+                      "limit": "500"
+                    },
+                    "type": "logs"
+                  }
+                ],
+                "query": "",
+                "refId": "A",
+                "timeField": "timestamp"
+              }
+            ],
+            "title": "words-counter-batch",
             "type": "table"
-          }],
-          "schemaVersion": 36,
-          "style": "dark",
-          "tags": [],
-          "templating": {
-            "list": []
           },
-          "time": {
-            "from": "now-6h",
-            "to": "now"
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "P211906C1C32DB77E"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "custom": {
+                  "align": "auto",
+                  "displayMode": "auto",
+                  "inspect": false
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Date"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 182
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "AmountOfWords"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 126
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "ObjectPath"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 239
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 7,
+              "x": 17,
+              "y": 9
+            },
+            "id": 12,
+            "options": {
+              "footer": {
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true,
+              "sortBy": []
+            },
+            "pluginVersion": "8.5.3",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "mysql",
+                  "uid": "P211906C1C32DB77E"
+                },
+                "format": "table",
+                "group": [],
+                "metricColumn": "none",
+                "rawQuery": true,
+                "rawSql": "SELECT * FROM words_counter_batch ORDER BY AmountOfWords DESC LIMIT 5\n",
+                "refId": "A",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "value"
+                      ],
+                      "type": "column"
+                    }
+                  ]
+                ],
+                "timeColumn": "time",
+                "where": [
+                  {
+                    "name": "$__timeFilter",
+                    "params": [],
+                    "type": "macro"
+                  }
+                ]
+              }
+            ],
+            "title": "top_5_words_count",
+            "type": "table"
           },
-          "timepicker": {},
-          "timezone": "",
-          "title": "Architecture project",
-          "uid": "X7Fnzz37k",
-          "version": 1,
-          "weekStart": ""
+          {
+            "datasource": {
+              "type": "elasticsearch",
+              "uid": "PC85D6D1DA8FC5BCD"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "custom": {
+                  "align": "auto",
+                  "displayMode": "auto",
+                  "inspect": false
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "message"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 410
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 17,
+              "x": 0,
+              "y": 16
+            },
+            "id": 6,
+            "options": {
+              "footer": {
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true,
+              "sortBy": []
+            },
+            "pluginVersion": "8.5.3",
+            "targets": [
+              {
+                "alias": "",
+                "bucketAggs": [],
+                "datasource": {
+                  "type": "elasticsearch",
+                  "uid": "PC85D6D1DA8FC5BCD"
+                },
+                "metrics": [
+                  {
+                    "id": "1",
+                    "settings": {
+                      "limit": "500"
+                    },
+                    "type": "logs"
+                  }
+                ],
+                "query": "",
+                "refId": "A",
+                "timeField": "timestamp"
+              }
+            ],
+            "title": "script-logs",
+            "type": "table"
+          },
+          {
+            "datasource": {
+              "type": "mysql",
+              "uid": "P211906C1C32DB77E"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "custom": {
+                  "align": "auto",
+                  "displayMode": "auto",
+                  "inspect": false
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "LinesCount"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 98
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "FileName"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 82
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "BucketName"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 200
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "ID"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.width",
+                      "value": 287
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 7,
+              "w": 7,
+              "x": 17,
+              "y": 16
+            },
+            "id": 14,
+            "options": {
+              "footer": {
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true,
+              "sortBy": []
+            },
+            "pluginVersion": "8.5.3",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "mysql",
+                  "uid": "P211906C1C32DB77E"
+                },
+                "format": "table",
+                "group": [],
+                "metricColumn": "none",
+                "rawQuery": true,
+                "rawSql": "SELECT * FROM lines_counter ORDER BY LinesCount DESC LIMIT 5",
+                "refId": "A",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "value"
+                      ],
+                      "type": "column"
+                    }
+                  ]
+                ],
+                "timeColumn": "time",
+                "where": [
+                  {
+                    "name": "$__timeFilter",
+                    "params": [],
+                    "type": "macro"
+                  }
+                ]
+              }
+            ],
+            "title": "top_5_lines_count",
+            "type": "table"
+          }
+        ],
+        "refresh": "",
+        "schemaVersion": 36,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+          "list": []
+        },
+        "time": {
+          "from": "now-6h",
+          "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "",
+        "title": "Main Dashboard",
+        "uid": "cnTkiG3nz",
+        "version": 5,
+        "weekStart": ""
         }
