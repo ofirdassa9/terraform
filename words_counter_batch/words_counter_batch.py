@@ -21,11 +21,10 @@ try:
     run_date = str(date.today())
     bucket = s3.Bucket(bucket_name)
     for object in bucket.objects.all():
-        words_count = 0
-        if object.last_modified > datetime.now(tzutc()) - timedelta(hours = 24):
-            words_count = words_count + len(object.get()['Body'].read().decode('utf-8').split())
+        if (object.last_modified > datetime.now(tzutc()) - timedelta(hours = 24) and object.get()['ContentLength'] <= 3000):
+            words_count = len(object.get()['Body'].read().decode('utf-8').split())
             print(f"{bucket_name}/{object.key} {run_date} {words_count}")
-        print(f"the word count of {object.key} is {words_count}")
+            print(f"the word count of {object.key} is {words_count}")
         cur = mydb.cursor()
         sql = f"CREATE TABLE IF NOT EXISTS {table_name} (ObjectPath VARCHAR(50), Date DATE, AmountOfWords INT(50));"
         print(f"QUERY: {sql}")
@@ -37,5 +36,6 @@ try:
         cur.execute(sql, val)
         print(f"inserted data {bucket_name}/{object.key} {run_date} {words_count}")
         mydb.commit()
+    mydb.close()
 except Exception as err:
     print(err.args)
