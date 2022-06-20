@@ -16,5 +16,4 @@ helm upgrade -n monitoring -i <release-name> grafana/grafana -f grafana/values.y
 ```bash
 terraform init
 terraform apply
-kubectl apply -f words_counter_batch/cron.yaml
 ```

@@ -65,29 +65,30 @@ module "lines_counter" {
   runtime              = local.vars.runtime
 }
 
-module "ec2_k8s" {
-  source             = "./modules/kind"
-  vpc_id             = module.vpc.aws_vpc_id
-  vpc_cidr_block     = module.vpc.vpc_cidr_block
-  ec2_public_key     = local.vars.ec2_public_key
-  environment        = local.vars.environment
-  security_group_ids = module.vpc.sg_vpc_access
-  subnet_id          = module.vpc.aws_public_subnet_id
-  az_for_ebs         = local.vars.public_subnets_az
-}
+# module "ec2_k8s" {
+#   source             = "./modules/kind"
+#   vpc_id             = module.vpc.aws_vpc_id
+#   vpc_cidr_block     = module.vpc.vpc_cidr_block
+#   ec2_public_key     = local.vars.ec2_public_key
+#   environment        = local.vars.environment
+#   security_group_ids = module.vpc.sg_vpc_access
+#   subnet_id          = module.vpc.aws_public_subnet_id
+#   az_for_ebs         = local.vars.public_subnets_az
+# }
 
 module "words_counter_batch" {
     depends_on = [
     module.mysql_rds
   ]
-  source                = "./modules/words_counter_batch"
-  AWS_ACCESS_KEY_ID     = local.vars.AWS_ACCESS_KEY_ID
-  AWS_SECRET_ACCESS_KEY = local.vars.AWS_SECRET_ACCESS_KEY
-  DB_ENDPOINT           = module.mysql_rds.address
-  USERNAME              = local.vars.username
-  PASSWORD              = local.vars.password
-  DB_NAME               = module.mysql_rds.db_name
-  BUCKET_NAME           = local.vars.words_bucket_name
-  TABLE_NAME            = local.vars.words_table_name
-
+  source                     = "./modules/words_counter_batch"
+  AWS_ACCESS_KEY_ID          = local.vars.AWS_ACCESS_KEY_ID
+  AWS_SECRET_ACCESS_KEY      = local.vars.AWS_SECRET_ACCESS_KEY
+  DB_ENDPOINT                = module.mysql_rds.address
+  USERNAME                   = local.vars.username
+  PASSWORD                   = local.vars.password
+  DB_NAME                    = module.mysql_rds.db_name
+  BUCKET_NAME                = local.vars.words_bucket_name
+  TABLE_NAME                 = local.vars.words_table_name
+  github_oauth_client_id     = local.vars.github_oauth_client_id
+  github_oauth_client_secret = local.vars.github_oauth_client_secret
 }

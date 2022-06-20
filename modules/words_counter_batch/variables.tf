@@ -33,3 +33,11 @@ variable "BUCKET_NAME" {
 variable "TABLE_NAME" {
   default = ""
 }
+
+variable "github_oauth_client_secret" {
+  default = ""
+}
+
+variable "github_oauth_client_id" {
+  default = ""
+}

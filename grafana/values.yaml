@@ -1,4 +1,4 @@
-envFromSecret: "secret-words-counter-batch"
+envFromSecret: "secret-grafana"
 datasources:
   datasources.yaml:
     apiVersion: 1
@@ -22,6 +22,17 @@ dashboardProviders:
       editable: true
       options:
         path: /var/lib/grafana/dashboards/default
+grafana.ini:
+  auth.github:
+    enabled: true
+    allow_sign_up: true
+    scopes: user:email,read:org
+    auth_url: https://github.com/login/oauth/authorize
+    token_url: https://github.com/login/oauth/access_token
+    api_url: https://api.github.com/user
+    allowed_organizations: org-ofirdassa9
+    client_id: ${github_oauth_client_id}
+    client_secret: ${github_oauth_client_secret}
 dashboards:
   default:
     project-dashboard:
