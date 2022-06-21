@@ -6,14 +6,14 @@ jobs:
     steps:
     - name: 'Checkout'
       uses: 'actions/checkout@v2'
-
-    - name: Get repositories
-      uses: hiberbee/github-action-helm@1.5.0
-      with:
-        helm: repo list
-        repository-config: repositories.yaml
-
-    - name: Install release
-      uses: hiberbee/github-action-helm@latest
-      with:
-        helm: upgrade --install grafana charts/grafana
+    
+    - name: 'Helm repo add & update'
+      run: |
+        helm repo add grafana https://grafana.github.io/helm-charts
+        helm repo add elastic https://helm.elastic.co
+        helm repo update
+    
+    - name: 'Helm upgrade'
+      run: |
+        helm upgrade -n monitoring -i <release-name> grafana/grafana -f grafana/values.yaml
+        helm upgrade -i <release-name> elastic/elasticsearch -f elasticsearch/values.yaml 
