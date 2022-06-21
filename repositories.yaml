@@ -1,0 +1,7 @@
+apiVersion: v2
+
+repositories:
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+  - name: elastic
+    url: https://helm.elastic.co
