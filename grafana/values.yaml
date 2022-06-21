@@ -1,4 +1,6 @@
 envFromSecret: "secret-grafana"
+persistence:
+  enabled: true
 datasources:
   datasources.yaml:
     apiVersion: 1
