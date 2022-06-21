@@ -7,7 +7,7 @@ resource "kubernetes_cron_job_v1" "words_counter_batch" {
   spec {
     concurrency_policy            = "Replace"
     failed_jobs_history_limit     = 5
-    schedule                      = "* * * * *"
+    schedule                      = "1 0 * * *"
     starting_deadline_seconds     = 10
     successful_jobs_history_limit = 10
     job_template {
