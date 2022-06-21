@@ -15,5 +15,5 @@ jobs:
     
     - name: 'Helm upgrade'
       run: |
-        helm upgrade -n monitoring -i <release-name> grafana/grafana -f grafana/values.yaml
-        helm upgrade -i <release-name> elastic/elasticsearch -f elasticsearch/values.yaml 
+        helm upgrade -n monitoring -i grafana grafana/grafana -f grafana/values.yaml
+        helm upgrade -i elasticsearch elastic/elasticsearch -f elasticsearch/values.yaml 
