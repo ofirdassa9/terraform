@@ -2,7 +2,7 @@ name: 'CD'
 on: push 
 jobs:
   deployment:
-    runs-on: self-hosted
+    runs-on: [self-hosted, linux, ARM64]
     steps:
     - name: 'Checkout'
       uses: 'actions/checkout@v1'
