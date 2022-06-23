@@ -1,4 +1,5 @@
 # Architecture Project
+![example workflow](https://github.com/org-ofirdassa9/docs/actions/workflows/cd.yml/badge.svg)
 
 Terraform & Kubernetes Project
 
