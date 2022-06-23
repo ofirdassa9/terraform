@@ -13,7 +13,7 @@ resource "aws_subnet" "public_subnets" {
   availability_zone       = var.public_subnets_az[count.index]
   vpc_id                  = aws_vpc.vpc.id
   tags = {
-    "Name" = "net-public-${var.environment}-0${count.index+1}"
+    "Name" = "net-public-${var.environment}-%02d${count.index+1}"
   }
 }
 
@@ -23,7 +23,7 @@ resource "aws_subnet" "public_subnets" {
 #   availability_zone = var.private_subnets_az[count.index]
 #   vpc_id            = aws_vpc.vpc.id
 #   tags = {
-#     "Name" = "net-private-${var.environment}-0${count.index+1}"
+#     "Name" = "net-private-${var.environment}-%02d${count.index+1}"
 #   }
 # }
 
@@ -70,7 +70,7 @@ resource "aws_vpc_endpoint_route_table_association" "s3" {
 #   connectivity_type = "private"
 #   subnet_id         = aws_subnet.private_subnets[count.index].id
 #   tags = {
-#     Name = "NAT-GW-${count.index+1}"
+#     Name = "NAT-GW-%02d${count.index+1}"
 #   }
 # }
 

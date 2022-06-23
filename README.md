@@ -1,5 +1,6 @@
 # Architecture Project
 ![example workflow](https://github.com/org-ofirdassa9/architecture-project/actions/workflows/cd.yml/badge.svg)
+![example event parameter](https://github.com/org-ofirdassa9/architecture-project/actions/workflows/cd.yml/badge.svg?event=push)
 
 Terraform & Kubernetes Project
 
