@@ -24,4 +24,3 @@ helm upgrade -i <release-name> elastic/elasticsearch -f elasticsearch/values.yam
 
 ## Draw.io
 ![Alt text](./Architectureproject.drawio.svg)
-<img src="./Architectureproject.drawio.svg">
