@@ -87,7 +87,7 @@ module "words_counter_batch" {
   USERNAME                   = local.vars.username
   PASSWORD                   = local.vars.password
   DB_NAME                    = module.mysql_rds.db_name
-  BUCKET_NAME                = local.vars.words_bucket_name
+  BUCKET_NAME                = local.vars.bucket_name
   TABLE_NAME                 = local.vars.words_table_name
   github_oauth_client_id     = local.vars.github_oauth_client_id
   github_oauth_client_secret = local.vars.github_oauth_client_secret
