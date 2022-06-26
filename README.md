@@ -21,3 +21,7 @@ terraform apply
 helm upgrade -n monitoring -i <release-name> grafana/grafana -f grafana/values.yaml
 helm upgrade -i <release-name> elastic/elasticsearch -f elasticsearch/values.yaml 
 ```
+
+## Draw.io
+![Alt text](./Architectureproject.drawio.svg)
+<img src="./Architectureproject.drawio.svg">
