@@ -13,7 +13,7 @@ resource "aws_subnet" "public_subnets" {
   availability_zone       = var.public_subnets_az[count.index]
   vpc_id                  = aws_vpc.vpc.id
   tags = {
-    "Name" = "net-public-${var.environment}-%02d${count.index+1}"
+    "Name" = "net-public-${var.environment}-${format("%02d", count.index + 1)}"
   }
 }
 
