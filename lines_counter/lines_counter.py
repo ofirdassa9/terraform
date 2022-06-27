@@ -31,7 +31,7 @@ def lambda_handler(event, context):
             cur.execute(sql, val)
             print(f"inserted data {bucket_name} {key_name} {body_len}")
             mydb.commit()
-            mydb.close()
+        mydb.close()
     except Exception as err:
         print(err.args)
     return {
