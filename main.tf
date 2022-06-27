@@ -58,7 +58,7 @@ module "lines_counter" {
   db_enpoint           = module.mysql_rds.address
   db_name              = module.mysql_rds.db_name
   table_name           = local.vars.table_name
-  lines_bucket_name    = local.vars.lines_bucket_name
+  lines_bucket_name    = local.vars.bucket_name
   filename             = local.vars.filename
   function_name        = local.vars.function_name
   handler              = local.vars.handler
